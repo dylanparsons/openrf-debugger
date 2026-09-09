@@ -1,0 +1,29 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "openrf-debugger"
+version = "0.1.0"
+description = "Open-source toolkit for analyzing, debugging, and correlating RF protocols with embedded devices."
+readme = "README.md"
+requires-python = ">=3.10"
+license = {file = "LICENSE"}
+authors = [
+    {name = "Dylan Parsons"}
+]
+dependencies = [
+    "scapy>=2.5.0"
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0"
+]
+
+[project.scripts]
+openrf = "openrf.cli:main"
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]

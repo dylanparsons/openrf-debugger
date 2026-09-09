@@ -1,0 +1,14 @@
+[
+  {
+    "timestamp": 1710000000.125,
+    "source": "uart",
+    "kind": "tx",
+    "description": "command transmitted"
+  },
+  {
+    "timestamp": 1710000000.180,
+    "source": "gpio",
+    "kind": "edge",
+    "description": "status line asserted"
+  }
+]
