@@ -20,6 +20,9 @@ dependencies = [
 dev = [
     "pytest>=8.0"
 ]
+live = [
+    "pyserial>=3.5"
+]
 
 [project.scripts]
 openrf = "openrf.cli:main"
