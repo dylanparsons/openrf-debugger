@@ -8,6 +8,7 @@ import threading
 from pathlib import Path
 
 from openrf.capture.pcap import load_pcap
+from openrf.capture.psd import load_psd
 from openrf.correlation.events import HardwareEvent, StreamCorrelator, correlate_events
 from openrf.packets.ieee802154 import summarize_packet
 
@@ -19,7 +20,7 @@ def build_parser() -> argparse.ArgumentParser:
     )
     sub = parser.add_subparsers(dest="command", required=True)
 
-    inspect_cmd = sub.add_parser("inspect", help="Inspect packets in a PCAP file.")
+    inspect_cmd = sub.add_parser("inspect", help="Inspect packets in a capture file.")
     inspect_cmd.add_argument("pcap", type=Path)
 
     packets_cmd = sub.add_parser("packets", help="Print packet summaries.")
@@ -86,8 +87,23 @@ def build_parser() -> argparse.ArgumentParser:
     return parser
 
 
+def _load_capture(path: Path):
+    suffix = path.suffix.lower()
+
+    if suffix == ".psd":
+        return load_psd(path)
+
+    if suffix in {".pcap", ".pcapng"}:
+        return load_pcap(path)
+
+    raise ValueError(
+        f"Unsupported capture format: {suffix or '<none>'}. "
+        "Expected .psd, .pcap, or .pcapng."
+    )
+
+
 def _print_packets(path: Path) -> None:
-    packets = load_pcap(path)
+    packets = _load_capture(path)
     for index, packet in enumerate(packets):
         summary = summarize_packet(packet)
         print(
@@ -120,7 +136,7 @@ def main() -> int:
         return 0
 
     if args.command == "correlate":
-        packets = load_pcap(args.pcap)
+        packets = _load_capture(args.pcap)
         events = _load_events(args.events)
         correlations = correlate_events(
             packets,
